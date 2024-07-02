@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google News Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .news-item {
+            margin-bottom: 20px;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .news-item p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Google News: Mobility Industry</h1>
+    <div id="news-feed"></div>
+
+    <script>
+        async function fetchRSS() {
+            const response = await fetch('https://rss.google.com/news/rss/search?q=mobility+industry');
+            const text = await response.text();
+            const parser = new DOMParser();
+            const xml = parser.parseFromString(text, 'text/xml');
+            const items = xml.querySelectorAll('item');
+            let html = '';
+
+            items.forEach(item => {
+                const title = item.querySelector('title').textContent;
+                const link = item.querySelector('link').textContent;
+                const description = item.querySelector('description').textContent;
+                html += `
+                    <div class="news-item">
+                        <h3><a href="${link}" target="_blank">${title}</a></h3>
+                        <p>${description}</p>
+                    </div>
+                `;
+            });
+
+            document.getElementById('news-feed').innerHTML = html;
+        }
+
+        fetchRSS();
+    </script>
+</body>
+</html>
