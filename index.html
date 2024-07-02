@@ -24,23 +24,20 @@
 
     <script>
         async function fetchRSS() {
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const targetUrl = 'https://news.google.com/rss/search?q=mobility+industry';
+            const rss2jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss/search?q=mobility+industry';
             try {
-                const response = await fetch(proxyUrl + targetUrl);
+                const response = await fetch(rss2jsonUrl);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                const text = await response.text();
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(text, 'text/xml');
-                const items = xml.querySelectorAll('item');
+                const data = await response.json();
+                const items = data.items;
                 let html = '';
 
                 items.forEach(item => {
-                    const title = item.querySelector('title').textContent;
-                    const link = item.querySelector('link').textContent;
-                    const description = item.querySelector('description').textContent;
+                    const title = item.title;
+                    const link = item.link;
+                    const description = item.description;
                     html += `
                         <div class="news-item">
                             <h3><a href="${link}" target="_blank">${title}</a></h3>
