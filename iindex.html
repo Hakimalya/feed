@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google News Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .news-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+        .news-item h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #0073e6;
+        }
+        .news-item h3 a {
+            text-decoration: none;
+            color: #0073e6;
+        }
+        .news-item h3 a:hover {
+            text-decoration: underline;
+        }
+        .news-item p {
+            margin: 5px 0;
+            color: #555;
+        }
+        .timestamp {
+            margin-top: 20px;
+            font-size: 12px;
+            color: gray;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Google News: Mobility Industry</h1>
+        <div id="news-feed">Loading...</div>
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+
+    <script>
+        async function fetchRSS() {
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const targetUrl = encodeURIComponent('https://news.google.com/rss/search?q=mobility+industry');
+            try {
+                const response = await fetch(proxyUrl + targetUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(data.contents, 'text/xml');
+                const items = xml.querySelectorAll('item');
+                let html = '';
+
+                items.forEach(item => {
+                    const title = item.querySelector('title').textContent;
+                    const link = item.querySelector('link').textContent;
+                    const description = item.querySelector('description').textContent;
+                    html += `
+                        <div class="news-item">
+                            <h3><a href="${link}" target="_blank">${title}</a></h3>
+                            <p>${description}</p>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('news-feed').innerHTML = html;
+                document.getElementById('timestamp').innerHTML = 'Last updated: ' + new Date().toLocaleString();
+            } catch (error) {
+                document.getElementById('news-feed').innerHTML = 'Error loading news feed: ' + error.message;
+            }
+        }
+
+        fetchRSS();
+    </script>
+</body>
+</html>
