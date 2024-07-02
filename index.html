@@ -24,7 +24,7 @@
 
     <script>
         async function fetchRSS() {
-            const rss2jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss/search?q=mobility+industry';
+            const rss2jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss%2Fsearch%3Fq%3Dmobility%2Bindustry';
             try {
                 const response = await fetch(rss2jsonUrl);
                 if (!response.ok) {
