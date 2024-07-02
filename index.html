@@ -24,20 +24,23 @@
 
     <script>
         async function fetchRSS() {
-            const rss2jsonUrl = 'https://api.rss2json.com/v1/api.json?rss_url=https%3A%2F%2Fnews.google.com%2Frss%2Fsearch%3Fq%3Dmobility%2Bindustry';
+            const proxyUrl = 'https://api.allorigins.win/get?url=';
+            const targetUrl = encodeURIComponent('https://news.google.com/rss/search?q=mobility+industry');
             try {
-                const response = await fetch(rss2jsonUrl);
+                const response = await fetch(proxyUrl + targetUrl);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                const items = data.items;
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(data.contents, 'text/xml');
+                const items = xml.querySelectorAll('item');
                 let html = '';
 
                 items.forEach(item => {
-                    const title = item.title;
-                    const link = item.link;
-                    const description = item.description;
+                    const title = item.querySelector('title').textContent;
+                    const link = item.querySelector('link').textContent;
+                    const description = item.querySelector('description').textContent;
                     html += `
                         <div class="news-item">
                             <h3><a href="${link}" target="_blank">${title}</a></h3>
