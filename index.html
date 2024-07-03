@@ -10,11 +10,16 @@
             padding: 20px;
         }
         .container {
-            max-width: 800px;
+            max-width: 1000px;
             margin: auto;
             background: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+        }
+        .section {
+            width: 48%;
         }
         h1 {
             text-align: center;
@@ -30,7 +35,7 @@
         }
         .news-item h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 16px;
             color: #0073e6;
         }
         .news-item h3 a {
@@ -50,20 +55,40 @@
             color: gray;
             text-align: center;
         }
+        .toggle-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .toggle-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="toggle-buttons">
+            <button onclick="showSection('international')">International News</button>
+            <button onclick="showSection('local')">Local News</button>
+        </div>
         <h1>Autopia Daily</h1>
-        <h2>International News</h2>
-        <div id="international-news">Loading...</div>
-        <h2>Local News (Scandinavia)</h2>
-        <div id="local-news">Loading...</div>
-        <div class="timestamp" id="timestamp"></div>
+        <div id="international-section" class="section">
+            <h2>International News</h2>
+            <div id="international-news">Loading...</div>
+            <div class="timestamp" id="international-timestamp"></div>
+        </div>
+        <div id="local-section" class="section">
+            <h2>Local News (Scandinavia)</h2>
+            <div id="local-news">Loading...</div>
+            <div class="timestamp" id="local-timestamp"></div>
+        </div>
+        <div class="timestamp" id="overall-timestamp"></div>
     </div>
 
     <script>
-        async function fetchRSS(url, elementId) {
+        async function fetchRSS(url, elementId, timestampId, limit = 10) {
             const proxyUrl = 'https://api.allorigins.win/get?url=';
             const targetUrl = encodeURIComponent(url);
             try {
@@ -77,27 +102,43 @@
                 const items = xml.querySelectorAll('item');
                 let html = '';
 
-                items.forEach(item => {
-                    const title = item.querySelector('title').textContent;
-                    const link = item.querySelector('link').textContent;
-                    const description = item.querySelector('description').textContent;
-                    html += `
-                        <div class="news-item">
-                            <h3><a href="${link}" target="_blank">${title}</a></h3>
-                            <p>${description}</p>
-                        </div>
-                    `;
+                items.forEach((item, index) => {
+                    if (index < limit) {
+                        const title = item.querySelector('title').textContent;
+                        const link = item.querySelector('link').textContent;
+                        const description = item.querySelector('description').textContent;
+                        html += `
+                            <div class="news-item">
+                                <h3><a href="${link}" target="_blank">${title}</a></h3>
+                                <p>${description}</p>
+                            </div>
+                        `;
+                    }
                 });
 
                 document.getElementById(elementId).innerHTML = html;
+                document.getElementById(timestampId).innerHTML = 'Last updated: ' + new Date().toLocaleString();
             } catch (error) {
                 document.getElementById(elementId).innerHTML = 'Error loading news feed: ' + error.message;
             }
         }
 
-        fetchRSS('https://news.google.com/rss/search?q=mobility+industry', 'international-news');
-        fetchRSS('https://news.google.com/rss/search?q=scandinavia+mobility+industry', 'local-news');
-        document.getElementById('timestamp').innerHTML = 'Last updated: ' + new Date().toLocaleString();
+        function showSection(section) {
+            document.getElementById('international-section').style.display = 'none';
+            document.getElementById('local-section').style.display = 'none';
+            if (section === 'international') {
+                document.getElementById('international-section').style.display = 'block';
+            } else {
+                document.getElementById('local-section').style.display = 'block';
+            }
+        }
+
+        fetchRSS('https://news.google.com/rss/search?q=mobility+industry', 'international-news', 'international-timestamp');
+        fetchRSS('https://news.google.com/rss/search?q=scandinavia+mobility+industry', 'local-news', 'local-timestamp');
+        document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
+
+        // Show international news by default
+        showSection('international');
     </script>
 </body>
 </html>
