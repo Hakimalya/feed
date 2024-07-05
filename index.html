@@ -118,7 +118,6 @@
             <button onclick="showSection('international')">International</button>
             <button onclick="showSection('nordic')">Nordic</button>
             <button onclick="showSection('tech')">Tech</button>
-            <button onclick="showSection('comp')">Comp</button>
         </div>
         <div id="international-section" class="section active">
             <h2>International</h2>
@@ -144,20 +143,12 @@
                 <button onclick="loadMore('tech')">More</button>
             </div>
         </div>
-        <div id="comp-section" class="section">
-            <h2>Comp</h2>
-            <div id="comp-news">Loading...</div>
-            <div class="timestamp" id="comp-timestamp"></div>
-            <div class="load-more" id="load-more-comp">
-                <button onclick="loadMore('comp')">More</button>
-            </div>
-        </div>
         <div class="timestamp" id="overall-timestamp"></div>
     </div>
 
     <script>
         let newsLimit = 10;
-        let newsOffset = { international: 0, nordic: 0, tech: 0, comp: 0 };
+        let newsOffset = { international: 0, nordic: 0, tech: 0 };
 
         async function fetchRSS(url, elementId, timestampId, limit = 10, offset = 0) {
             const proxyUrl = 'https://api.allorigins.win/get?url=';
@@ -212,15 +203,12 @@
             document.getElementById('international-section').classList.remove('active');
             document.getElementById('nordics-section').classList.remove('active');
             document.getElementById('tech-section').classList.remove('active');
-            document.getElementById('comp-section').classList.remove('active');
             if (section === 'international') {
                 document.getElementById('international-section').classList.add('active');
             } else if (section === 'nordic') {
                 document.getElementById('nordics-section').classList.add('active');
             } else if (section === 'tech') {
                 document.getElementById('tech-section').classList.add('active');
-            } else if (section === 'comp') {
-                document.getElementById('comp-section').classList.add('active');
             }
         }
 
@@ -231,23 +219,21 @@
 
         function updateFeeds(section) {
             if (section === 'international' || !section) {
-                fetchRSS('https://news.google.com/rss/search?q=EV+OR+electric+vehicle+OR+car+industry+OR+automobile+market+OR+new+car+models+OR+Chinese+car+brands&hl=en&gl=US&ceid=US:en&sort=date', 'international-news', 'international-timestamp', newsLimit, newsOffset.international);
+                fetchRSS('https://news.google.com/rss/search?q=mobility+industry&hl=en&gl=US&ceid=US:en&sort=date', 'international-news', 'international-timestamp', newsLimit, newsOffset.international);
             }
             if (section === 'nordic' || !section) {
-                fetchRSS('https://news.google.com/rss/search?q=site:carup.se&hl=sv&gl=SE&ceid=SE:sv&sort=date’, ‘nordics-news’, ‘nordics-timestamp’, newsLimit, newsOffset.nordic);
-}
-if (section === ‘tech’ || !section) {
-fetchRSS(‘https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date’, ‘tech-news’, ‘tech-timestamp’, newsLimit, newsOffset.tech);
-}
-if (section === ‘comp’ || !section) {
-fetchRSS(‘https://news.google.com/rss/search?q=Wayke+OR+Blocket+OR+Carwow+OR+Autotrader+OR+Heycar+OR+Bilweb+OR+hedin+bil&hl=en&gl=US&ceid=US:en&sort=date’, ‘comp-news’, ‘comp-timestamp’, newsLimit, newsOffset.comp);
-}
-if (!section) {
-document.getElementById(‘overall-timestamp’).innerHTML = ’Page last updated: ’ + new Date().toLocaleString();
-}
-}
-    // Initialize the feeds
-    updateFeeds();
-</script>
+                fetchRSS('https://news.google.com/rss/search?q=site:carup.se&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'nordics-news', 'nordics-timestamp', newsLimit, newsOffset.nordic);
+            }
+            if (section === 'tech' || !section) {
+                fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'tech-news', 'tech-timestamp', newsLimit, newsOffset.tech);
+            }
+            if (!section) {
+                document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
+            }
+        }
+
+        // Initialize the feeds
+        updateFeeds();
+    </script>
 </body>
 </html>
