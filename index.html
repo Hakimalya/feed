@@ -320,13 +320,13 @@
 
         function updateFeeds() {
             if (selectedCategories.includes('international')) {
-                fetchRSS('https://news.google.com/rss/search?q=mobility+industry', 'international-news', 'international-timestamp', newsLimit);
+                fetchRSS('https://news.google.com/rss/search?q=mobility+industry&hl=en&gl=US&ceid=US:en&sort=date', 'international-news', 'international-timestamp', newsLimit);
             }
             if (selectedCategories.includes('nordics')) {
-                fetchRSS('https://news.google.com/rss/search?q=bilförsäljning+OR+bilhandel+OR+e-handel+OR+bilhandlare+OR+mobility+Sverige+OR+MRF&hl=sv&gl=SE&ceid=SE:sv', 'nordics-news', 'nordics-timestamp', newsLimit);
+                fetchRSS('https://news.google.com/rss/search?q=bilförsäljning+OR+bilhandel+OR+e-handel+OR+bilhandlare+OR+mobility+Sverige+OR+MRF&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'nordics-news', 'nordics-timestamp', newsLimit);
             }
             if (selectedCategories.includes('tech')) {
-                fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv', 'tech-news', 'tech-timestamp', newsLimit);
+                fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'tech-news', 'tech-timestamp', newsLimit);
             }
             document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
         }
