@@ -206,6 +206,7 @@
             const proxyUrl = 'https://api.allorigins.win/get?url=';
             const targetUrl = encodeURIComponent(url);
             try {
+                console.log(`Fetching data from: ${proxyUrl + targetUrl}`); // Debugging line
                 const response = await fetch(proxyUrl + targetUrl);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -249,9 +250,9 @@
         function showSection(section) {
             document.getElementById('international-section').classList.remove('active');
             document.getElementById('nordics-section').classList.remove('active');
-            document.getElementById('tech-section’).classList.remove(‘active’);
-if (section === ‘international’) {
-document.getElementById(‘international-section’).classList.add(‘active’);
+            document.getElementById('tech-section').classList.remove('active');
+            if (section === 'international') {
+                document.getElementById('international-section').classList.add('active’);
 } else if (section === ‘nordics’) {
 document.getElementById(‘nordics-section’).classList.add(‘active’);
 } else if (section === ‘tech’) {
@@ -274,13 +275,13 @@ document.getElementById(‘tech-section’).classList.add(‘active’);
 
     function updateFeeds() {
         if (selectedCategories.includes('international')) {
-            fetchRSS('https://news.google.com/rss/search?q=mobility+industry&hl=en&gl=US&ceid=US:en&sort=date&when:1d', 'international-news', 'international-timestamp', newsLimit);
+            fetchRSS('https://news.google.com/rss/search?q=mobility+industry&hl=en&gl=US&ceid=US:en&sort=date', 'international-news', 'international-timestamp', newsLimit);
         }
         if (selectedCategories.includes('nordics')) {
-            fetchRSS('https://news.google.com/rss/search?q=bilförsäljning+OR+bilhandel+OR+e-handel+OR+bilhandlare+OR+mobility+Sverige+OR+MRF&hl=sv&gl=SE&ceid=SE:sv&sort=date&when:1d', 'nordics-news', 'nordics-timestamp', newsLimit);
+            fetchRSS('https://news.google.com/rss/search?q=bilförsäljning+OR+bilhandel+OR+e-handel+OR+bilhandlare+OR+mobility+Sverige+OR+MRF&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'nordics-news', 'nordics-timestamp', newsLimit);
         }
         if (selectedCategories.includes('tech')) {
-            fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date&when:1d', 'tech-news', 'tech-timestamp', newsLimit);
+            fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'tech-news', 'tech-timestamp', newsLimit);
         }
         document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
     }
