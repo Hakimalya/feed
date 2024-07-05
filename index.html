@@ -5,33 +5,23 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            background-color: #121212;
+            color: #f4f4f9;
             margin: 0;
             padding: 20px;
         }
         .container {
             max-width: 1000px;
             margin: auto;
-            background: #fff;
+            background: #1e1e1e;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .toggle-buttons {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .toggle-buttons button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .section {
-            display: none;
+            border-radius: 10px;
+            position: relative;
         }
         h1 {
             text-align: center;
-            color: #333;
+            color: #ffffff;
         }
         h2 {
             color: #0073e6;
@@ -39,7 +29,7 @@
         .news-item {
             display: flex;
             align-items: flex-start;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #444;
             padding: 10px 0;
             margin-bottom: 10px;
         }
@@ -67,12 +57,12 @@
         }
         .news-content p {
             margin: 5px 0;
-            color: #555;
+            color: #bbb;
             font-size: 14px;
         }
         .news-content .timestamp {
             font-size: 12px;
-            color: gray;
+            color: #888;
         }
         .timestamp {
             margin-top: 20px;
@@ -80,16 +70,96 @@
             color: gray;
             text-align: center;
         }
+        .toggle-buttons {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .toggle-buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: #0073e6;
+            border: none;
+            color: white;
+            border-radius: 5px;
+        }
+        .toggle-buttons button:hover {
+            background: #005bb5;
+        }
+        .section {
+            display: none;
+        }
+        .section.active {
+            display: block;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #1e1e1e;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .settings-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #0073e6;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .settings-button:hover {
+            background: #005bb5;
+        }
+        .settings-field {
+            margin-bottom: 15px;
+        }
+        .settings-field label {
+            display: block;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>Autopia Daily</h1>
+        <button class="settings-button" onclick="openSettings()">Settings</button>
         <div class="toggle-buttons">
             <button onclick="showSection('international')">International News</button>
             <button onclick="showSection('local')">Local News</button>
+            <button onclick="showSection('tech')">Tech News</button>
         </div>
-        <h1>Autopia Daily</h1>
-        <div id="international-section" class="section">
+        <div id="international-section" class="section active">
             <h2>International News</h2>
             <div id="international-news">Loading...</div>
             <div class="timestamp" id="international-timestamp"></div>
@@ -99,10 +169,39 @@
             <div id="local-news">Loading...</div>
             <div class="timestamp" id="local-timestamp"></div>
         </div>
+        <div id="tech-section" class="section">
+            <h2>Tech News</h2>
+            <div id="tech-news">Loading...</div>
+            <div class="timestamp" id="tech-timestamp"></div>
+        </div>
         <div class="timestamp" id="overall-timestamp"></div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSettings()">&times;</span>
+            <h2>Settings</h2>
+            <div class="settings-field">
+                <label for="news-limit">Number of news items per section:</label>
+                <input type="number" id="news-limit" name="news-limit" value="10">
+            </div>
+            <div class="settings-field">
+                <label for="news-categories">Categories to display:</label>
+                <select id="news-categories" name="news-categories" multiple>
+                    <option value="international" selected>International</option>
+                    <option value="local" selected>Local</option>
+                    <option value="tech" selected>Tech</option>
+                </select>
+            </div>
+            <button onclick="applySettings()">Apply</button>
+        </div>
+    </div>
+
     <script>
+        let newsLimit = 10;
+        let selectedCategories = ['international', 'local', 'tech'];
+
         async function fetchRSS(url, elementId, timestampId, limit = 10) {
             const proxyUrl = 'https://api.allorigins.win/get?url=';
             const targetUrl = encodeURIComponent(url);
@@ -146,21 +245,5 @@
         }
 
         function showSection(section) {
-            document.getElementById('international-section').style.display = 'none';
-            document.getElementById('local-section').style.display = 'none';
-            if (section === 'international') {
-                document.getElementById('international-section').style.display = 'block';
-            } else {
-                document.getElementById('local-section').style.display = 'block';
-            }
-        }
-
-        fetchRSS('https://news.google.com/rss/search?q=mobility+industry', 'international-news', 'international-timestamp');
-        fetchRSS('https://news.google.com/rss/search?q=scandinavia+mobility+industry', 'local-news', 'local-timestamp');
-        document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
-
-        // Show international news by default
-        showSection('international');
-    </script>
-</body>
-</html>
+            document.getElementById('international-section').classList.remove('active');
+            document.getElementById('local-section').
