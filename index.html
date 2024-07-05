@@ -249,90 +249,45 @@
         function showSection(section) {
             document.getElementById('international-section').classList.remove('active');
             document.getElementById('nordics-section').classList.remove('active');
-            document.getElementById('tech-section').classList.remove('active');
-            if (section === 'international') {
-                document.getElementById('international-section').classList.add('active');
-            } else if (section === 'nordics') {
-                document.getElementById('nordics-section').classList.add('active');
-            } else if (section === 'tech') {
-                document.getElementById('tech-section').classList.add('active');
-            }
-        }
+            document.getElementById('tech-section’).classList.remove(‘active’);
+if (section === ‘international’) {
+document.getElementById(‘international-section’).classList.add(‘active’);
+} else if (section === ‘nordics’) {
+document.getElementById(‘nordics-section’).classList.add(‘active’);
+} else if (section === ‘tech’) {
+document.getElementById(‘tech-section’).classList.add(‘active’);
+}
+}    function openSettings() {
+        document.getElementById('settingsModal').style.display = 'block';
+    }
 
-        function openSettings() {
-            document.getElementById('settingsModal').style.display = 'block';
-        }
+    function closeSettings() {
+        document.getElementById('settingsModal').style.display = 'none';
+    }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').style.display = 'none';
-        }
-
-        function applySettings() {
-            newsLimit = document.getElementById('news-limit').value;
-            selectedCategories = Array.from(document.getElementById('news-categories').selectedOptions).map(option => option.value);
-            closeSettings();
-            updateFeeds();
-        }
-
-        async function fetchRSS(url, elementId, timestampId, limit = 10) {
-            const proxyUrl = 'https://api.allorigins.win/get?url=';
-            const targetUrl = encodeURIComponent(url);
-            try {
-                const response = await fetch(proxyUrl + targetUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                const parser = new DOMParser();
-                const xml = parser.parseFromString(data.contents, 'text/xml');
-                const items = xml.querySelectorAll('item');
-                let html = '';
-
-                console.log(`Fetched data for ${elementId}:`, data.contents); // Debugging line
-
-                items.forEach((item, index) => {
-                    if (index < limit) {
-                        const title = item.querySelector('title').textContent;
-                        const link = item.querySelector('link').textContent;
-                        const description = item.querySelector('description').textContent;
-                        const pubDate = item.querySelector('pubDate').textContent;
-                        const imageUrl = item.querySelector('media\\:thumbnail') ? item.querySelector('media\\:thumbnail').getAttribute('url') : '';
-
-                        html += `
-                            <div class="news-item">
-                                ${imageUrl ? `<img src="${imageUrl}" alt="News Image">` : ''}
-                                <div class="news-content">
-                                    <h3><a href="${link}" target="_blank">${title}</a></h3>
-                                    <p>${description}</p>
-                                    <div class="timestamp">${new Date(pubDate).toLocaleString()}</div>
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-
-                document.getElementById(elementId).innerHTML = html;
-                document.getElementById(timestampId).innerHTML = 'Last updated: ' + new Date().toLocaleString();
-            } catch (error) {
-                document.getElementById(elementId).innerHTML = 'Error loading news feed: ' + error.message;
-            }
-        }
-
-        function updateFeeds() {
-            if (selectedCategories.includes('international')) {
-                fetchRSS('https://news.google.com/rss/search?q=mobility+industry&hl=en&gl=US&ceid=US:en&sort=date', 'international-news', 'international-timestamp', newsLimit);
-            }
-            if (selectedCategories.includes('nordics')) {
-                fetchRSS('https://news.google.com/rss/search?q=bilförsäljning+OR+bilhandel+OR+e-handel+OR+bilhandlare+OR+mobility+Sverige+OR+MRF&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'nordics-news', 'nordics-timestamp', newsLimit);
-            }
-            if (selectedCategories.includes('tech')) {
-                fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date', 'tech-news', 'tech-timestamp', newsLimit);
-            }
-            document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
-        }
-
-        // Initialize the feeds
+    function applySettings() {
+        newsLimit = document.getElementById('news-limit').value;
+        selectedCategories = Array.from(document.getElementById('news-categories').selectedOptions).map(option => option.value);
+        closeSettings();
         updateFeeds();
-    </script>
+    }
+
+    function updateFeeds() {
+        if (selectedCategories.includes('international')) {
+            fetchRSS('https://news.google.com/rss/search?q=mobility+industry&hl=en&gl=US&ceid=US:en&sort=date&when:1d', 'international-news', 'international-timestamp', newsLimit);
+        }
+        if (selectedCategories.includes('nordics')) {
+            fetchRSS('https://news.google.com/rss/search?q=bilförsäljning+OR+bilhandel+OR+e-handel+OR+bilhandlare+OR+mobility+Sverige+OR+MRF&hl=sv&gl=SE&ceid=SE:sv&sort=date&when:1d', 'nordics-news', 'nordics-timestamp', newsLimit);
+        }
+        if (selectedCategories.includes('tech')) {
+            fetchRSS('https://news.google.com/rss/search?q=site:breakit.se&hl=sv&gl=SE&ceid=SE:sv&sort=date&when:1d', 'tech-news', 'tech-timestamp', newsLimit);
+        }
+        document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
+    }
+
+    // Initialize the feeds
+    updateFeeds();
+</script>
 </body>
 </html>
+```
