@@ -15,45 +15,6 @@
             background: #fff;
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-        }
-        .section {
-            width: 48%;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        h2 {
-            color: #0073e6;
-        }
-        .news-item {
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
-            margin-bottom: 10px;
-        }
-        .news-item h3 {
-            margin: 0;
-            font-size: 16px;
-            color: #0073e6;
-        }
-        .news-item h3 a {
-            text-decoration: none;
-            color: #0073e6;
-        }
-        .news-item h3 a:hover {
-            text-decoration: underline;
-        }
-        .news-item p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .timestamp {
-            margin-top: 20px;
-            font-size: 12px;
-            color: gray;
-            text-align: center;
         }
         .toggle-buttons {
             text-align: center;
@@ -64,6 +25,60 @@
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
+        }
+        .section {
+            display: none;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        h2 {
+            color: #0073e6;
+        }
+        .news-item {
+            display: flex;
+            align-items: flex-start;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            margin-bottom: 10px;
+        }
+        .news-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+        .news-content {
+            flex: 1;
+        }
+        .news-content h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #0073e6;
+        }
+        .news-content h3 a {
+            text-decoration: none;
+            color: #0073e6;
+        }
+        .news-content h3 a:hover {
+            text-decoration: underline;
+        }
+        .news-content p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        .news-content .timestamp {
+            font-size: 12px;
+            color: gray;
+        }
+        .timestamp {
+            margin-top: 20px;
+            font-size: 12px;
+            color: gray;
+            text-align: center;
         }
     </style>
 </head>
@@ -107,10 +122,17 @@
                         const title = item.querySelector('title').textContent;
                         const link = item.querySelector('link').textContent;
                         const description = item.querySelector('description').textContent;
+                        const pubDate = item.querySelector('pubDate').textContent;
+                        const imageUrl = item.querySelector('media\\:thumbnail') ? item.querySelector('media\\:thumbnail').getAttribute('url') : '';
+
                         html += `
                             <div class="news-item">
-                                <h3><a href="${link}" target="_blank">${title}</a></h3>
-                                <p>${description}</p>
+                                ${imageUrl ? `<img src="${imageUrl}" alt="News Image">` : ''}
+                                <div class="news-content">
+                                    <h3><a href="${link}" target="_blank">${title}</a></h3>
+                                    <p>${description}</p>
+                                    <div class="timestamp">${new Date(pubDate).toLocaleString()}</div>
+                                </div>
                             </div>
                         `;
                     }
