@@ -247,4 +247,46 @@
         function showSection(section) {
             document.getElementById('international-section').classList.remove('active');
             document.getElementById('local-section').classList.remove('active');
-            document.getElementById('
+            document.getElementById('tech-section').classList.remove('active');
+            if (section === 'international') {
+                document.getElementById('international-section').classList.add('active');
+            } else if (section === 'local') {
+                document.getElementById('local-section').classList.add('active');
+            } else if (section === 'tech') {
+                document.getElementById('tech-section').classList.add('active');
+            }
+        }
+
+        function openSettings() {
+            document.getElementById('settingsModal').style.display = 'block';
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function applySettings() {
+            newsLimit = document.getElementById('news-limit').value;
+            selectedCategories = Array.from(document.getElementById('news-categories').selectedOptions).map(option => option.value);
+            closeSettings();
+            updateFeeds();
+        }
+
+        function updateFeeds() {
+            if (selectedCategories.includes('international')) {
+                fetchRSS('https://news.google.com/rss/search?q=mobility+industry', 'international-news', 'international-timestamp', newsLimit);
+            }
+            if (selectedCategories.includes('local')) {
+                fetchRSS('https://news.google.com/rss/search?q=scandinavia+mobility+industry+OR+site:carup.se+OR+site:alltomelbil.se', 'local-news', 'local-timestamp', newsLimit);
+            }
+            if (selectedCategories.includes('tech')) {
+                fetchRSS('https://news.google.com/rss/search?q=site:breakit.se', 'tech-news', 'tech-timestamp', newsLimit);
+            }
+            document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
+        }
+
+        // Initialize the feeds
+        updateFeeds();
+    </script>
+</body>
+</html>
