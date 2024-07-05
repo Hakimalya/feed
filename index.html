@@ -185,8 +185,15 @@
                     }
                 });
 
-                document.getElementById(elementId).innerHTML += html;
+                if (offset === 0) {
+                    document.getElementById(elementId).innerHTML = html;
+                } else {
+                    document.getElementById(elementId).innerHTML += html;
+                }
                 document.getElementById(timestampId).innerHTML = 'Last updated: ' + new Date().toLocaleString();
+                if (html === '') {
+                    document.getElementById(elementId).innerHTML = 'No news available for the selected category.';
+                }
             } catch (error) {
                 document.getElementById(elementId).innerHTML = 'Error loading news feed: ' + error.message;
             }
@@ -222,11 +229,10 @@
             }
             if (!section) {
                 document.getElementById('overall-timestamp').innerHTML = 'Page last updated: ' + new Date().toLocaleString();
-            }
-        }
-
-        // Initialize the feeds
-        updateFeeds();
-    </script>
+}
+}
+    // Initialize the feeds
+    updateFeeds();
+</script>
 </body>
 </html>
