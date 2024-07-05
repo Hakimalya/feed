@@ -155,22 +155,22 @@
         <h1>Autopia Daily</h1>
         <button class="settings-button" onclick="openSettings()">Settings</button>
         <div class="toggle-buttons">
-            <button onclick="showSection('international')">International News</button>
-            <button onclick="showSection('nordics')">Nordics News</button>
-            <button onclick="showSection('tech')">Tech News</button>
+            <button onclick="showSection('international')">International</button>
+            <button onclick="showSection('nordics')">Nordic</button>
+            <button onclick="showSection('tech')">Tech</button>
         </div>
         <div id="international-section" class="section active">
-            <h2>International News</h2>
+            <h2>International</h2>
             <div id="international-news">Loading...</div>
             <div class="timestamp" id="international-timestamp"></div>
         </div>
         <div id="nordics-section" class="section">
-            <h2>Nordics News</h2>
+            <h2>Nordic</h2>
             <div id="nordics-news">Loading...</div>
             <div class="timestamp" id="nordics-timestamp"></div>
         </div>
         <div id="tech-section" class="section">
-            <h2>Tech News</h2>
+            <h2>Tech</h2>
             <div id="tech-news">Loading...</div>
             <div class="timestamp" id="tech-timestamp"></div>
         </div>
@@ -190,7 +190,7 @@
                 <label for="news-categories">Categories to display:</label>
                 <select id="news-categories" name="news-categories" multiple>
                     <option value="international" selected>International</option>
-                    <option value="nordics" selected>Nordics</option>
+                    <option value="nordics" selected>Nordic</option>
                     <option value="tech" selected>Tech</option>
                 </select>
             </div>
